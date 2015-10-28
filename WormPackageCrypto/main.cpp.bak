@@ -1,0 +1,77 @@
+/*
+ * main.cpp
+ *
+ *  Created on: Oct 22, 2015
+ *      Author: Eclipse C++
+ */
+
+#include <assert.h>
+#include <polarssl/aes.h>
+#include <polarssl/ctr_drbg.h>
+#include <polarssl/entropy.h>
+#include <cstdio>
+#include <cstring>
+#include <iostream>
+
+const unsigned int AES_KEY_SIZE = 256;
+const unsigned int EXPONENT = 65537;
+const unsigned int BUFFER_SIZE = 1024;
+
+void test_aes()
+{
+    // 产生随机的AES key buffer
+    ctr_drbg_context ctr_drbg;
+    entropy_context entropy;
+    unsigned char aes_key_buf[AES_KEY_SIZE] = { 0 };
+
+    entropy_init(&entropy);
+    assert(ctr_drbg_init(&ctr_drbg, entropy_func, &entropy, nullptr, 0) == 0);
+    ctr_drbg_set_prediction_resistance(&ctr_drbg, CTR_DRBG_PR_OFF);
+    ctr_drbg_random(&ctr_drbg, aes_key_buf, AES_KEY_SIZE);
+
+    // 生成AES
+    aes_context    aes_enc, aes_dec;
+    aes_init(&aes_enc);
+    aes_init(&aes_dec);
+
+    assert(aes_setkey_enc(&aes_enc, aes_key_buf, AES_KEY_SIZE) == 0);
+    assert(aes_setkey_dec(&aes_dec, aes_key_buf, AES_KEY_SIZE) == 0);
+
+    // 加密 & 解密. 明文与密文的长度是固定的， 都是16bytes
+    /*
+    const unsigned int DATA_SIZE = 16;
+    unsigned char plaintext[DATA_SIZE] = { 0 };
+    unsigned char ciphertext[DATA_SIZE] = { 0 };
+    sprintf((char*)plaintext, "%s", "moyakukudi");
+
+    assert(aes_crypt_ecb(&aes_enc, AES_ENCRYPT, plaintext, ciphertext) == 0);
+    memset(plaintext, 0, DATA_SIZE);
+    assert(aes_crypt_ecb(&aes_dec, AES_DECRYPT, ciphertext, plaintext) == 0);
+    */
+
+    // 加密 & 解密. 明文与密文的长度是不固定的, 但必须是16bytes的倍数
+    const unsigned int DATA_SIZE = 1024;
+    unsigned char plaintext[DATA_SIZE] = "where is my address?";
+    unsigned char ciphertext[DATA_SIZE] = { 0 };
+
+    const unsigned int IV_SIZE = 16;
+    unsigned char iv[IV_SIZE] = { 0 };
+    //unsigned char iv2[IV_SIZE] = { 0 };
+    //ctr_drbg_random(&ctr_drbg, iv, IV_SIZE);
+    //strcpy((char*)iv2, (const char*)iv);
+
+    assert(aes_crypt_cbc(&aes_enc, AES_ENCRYPT, DATA_SIZE, iv, plaintext, ciphertext) == 0);
+    memset(plaintext, 0, DATA_SIZE);
+    memset(iv, 0, IV_SIZE);
+    assert(aes_crypt_cbc(&aes_dec, AES_DECRYPT, DATA_SIZE, iv, ciphertext, plaintext) == 0);
+
+    std::cout << (char*)plaintext << std::endl;
+
+    puts("over");
+}
+
+int main()
+{
+    test_aes();
+    return 0;
+}

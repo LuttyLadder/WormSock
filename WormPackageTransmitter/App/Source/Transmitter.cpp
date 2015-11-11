@@ -148,7 +148,7 @@ bool Transmitter::recReceivingPackage(int sockID, void* arg) {
 	if (item != sockMap.end()) {
 		sockInfo &si = *item->second;
 		if (si.flag == WAIT_FIRST_PACKAGE) {
-			//发送收到第一包消息
+			//发送 收到第一包 消息
 			wHook->pushAll("Transmitter Receiving First Package", sockID, recvInfo, true);
 
 			/*
@@ -156,11 +156,11 @@ bool Transmitter::recReceivingPackage(int sockID, void* arg) {
 			 * 	----------------------------------------------------
 			 * 	| Random Length | Random Content | IP | PORT | CRC |
 			 * 	----------------------------------------------------
-			 * 	|       1       |      0 ~ 4     | 4  |   2  |  1  |
+			 * 	|       1       |      1 ~ 4     | 4  |   2  |  1  |
 			 *    ----------------------------------------------------
 			 */
 			if (recvInfo->size < 8 || recvInfo->size > 12 || recvInfo->buf[0] > 4) {
-				DEBUG("First Package Error");
+				DEBUG("First Package Error : size " << recvInfo->size);
 				closeQueue.push(sockID);
 				return true;
 			}
@@ -265,7 +265,7 @@ void Transmitter::process() {
 					if (runMode == CLIENT) {
 						receiverPackage *rpack = new receiverPackage(si.recSockID, autobuf);
 
-						char randomSize = rand() % 5;
+						char randomSize = rand() % 4 + 1;
 
 						rpack->size = randomSize + 8;
 						rpack->buf[0] = randomSize;

@@ -36,11 +36,11 @@ namespace App {
 			/* hook from args */
 			auto arg = argMap.find(key);
 			if(arg != argMap.end()){
-				std::cout << "   |- " << key << " -- " << arg->second << std::endl;
+				std::cout << "   ├─ \033[1;34m" << key << "\033[0m ▶ \033[1;35m" << arg->second << "\033[0m" << std::endl;
 				return arg->second;
 			}
 			const std::string tmp = config.get(key, defaultVal);
-			std::cout << "   |- " << key << " -> " << tmp << std::endl;
+			std::cout << "   ├─ \033[1;34m" << key << "\033[0m ▷ \033[1;32m" << tmp << "\033[0m" << std::endl;
 			return tmp;
 		}
 

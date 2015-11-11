@@ -321,5 +321,7 @@ void Receiver::process() {
 		item.second->getSocket().close();
 	}
 
+	ss.close();
+
 	std::cout << "Receive are Stopped." << std::endl;
 }

@@ -18,8 +18,10 @@
 
 #ifdef _RELEASE
 #	define PLUGIN_PATH "/mnt/WormSock/Plugin"
+#	define CONFIG_PATH "/mnt/WormSock/Config"
 #else
-#	define PLUGIN_PATH "/home/dlll/workspace/Test/WormSocks/DebugPlugin"
+#	define PLUGIN_PATH "/home/lutty/workspace/Test/WormSocks/DebugPlugin"
+#	define CONFIG_PATH "/home/lutty/workspace/Test/WormSocks/Config"
 #endif
 
 bool run = true;
@@ -30,7 +32,7 @@ void testSigInt(int cc) {
 }
 
 void initWormTool(int argc, char **argv, App::WormTool::WormToolImpl &wormTool) {
-	wormTool.initConfig("/mnt/WormSock/Config", "*.conf");
+	wormTool.initConfig(CONFIG_PATH, "*.conf");
 	wormTool.initArgs(argc, argv);
 
 	if (wormTool.getArgs("runAs", "client") == "server") {
@@ -50,9 +52,9 @@ void pluginLoad(App::WormPlugin::PluginManager &pm, WormBrage &brage) {
 	std::cout << "try load module dir: " << PLUGIN_PATH << std::endl;
 	pm.loadPluginDir(PLUGIN_PATH, "*.so");
 	for (auto item : pm.getPluginList()) {
-		std::cout << " |- try load module : " << item.info.pluginName << ", version=" << item.info.pluginVersion << std::endl;
+		std::cout << " ─ \033[1;34mtry load module\033[0m : \033[1;36m" << item.info.pluginName << ", version=" << item.info.pluginVersion << "\033[0m" << std::endl;
 		if (!item.info.instance->init(FRAME_VERSION, &brage)) {
-			std::cerr << "Module : " << item.info.pluginName << " init error" << std::endl;
+			std::cerr << "   └─\033[1;31m init error \033[0m" << std::endl;
 			unloadList.push_back(item);
 		}
 	}
@@ -66,7 +68,7 @@ void pluginHook(App::WormPlugin::PluginManager &pm, WormBrage &brage) {
 
 	for (auto item : pm.getPluginList()) {
 		if (!item.info.instance->hook(&brage)) {
-			std::cerr << "Module : " << item.info.pluginName << " hook error" << std::endl;
+			std::cerr << "   └─\033[1;31m hook error \033[0m" << std::endl;
 			unloadList.push_back(item);
 		}
 	}

@@ -45,7 +45,7 @@ all: WormSock
 WormSock: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: Cross G++ Linker'
-	mips-openwrt-linux-g++  -o "WormSock" $(OBJS) $(USER_OBJS) $(LIBS)
+	mipsel-openwrt-linux-g++  -o "WormSock" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

@@ -39,7 +39,7 @@ class CryptoChaCha20: public WormPluginInstance {
 				uint8_t ID[8];
 				uint8_t DATA_KEY[32];
 
-				BN_CTX *ECC_CTX {nullptr};
+				BN_CTX *ECC_CTX { nullptr };
 				EC_KEY *ECC_KEY;
 				const EC_GROUP *ECC_GROUP;
 
@@ -129,10 +129,13 @@ class CryptoChaCha20: public WormPluginInstance {
 		int encode_ECC(const EC_GROUP *group, EC_POINT *C1, EC_POINT *C2, uint8_t *to, BN_CTX *ctx);
 		bool decode_ECC(const EC_GROUP *group, EC_POINT *C1, EC_POINT *C2, uint8_t *from, BN_CTX *ctx);
 
-		encryptor* getEncryptor(int sockID, uint8_t *nonce = nullptr) {
+		encryptor* getEncryptor(const int sockID, uint8_t *nonce = nullptr) {
 			encryptor *enc = nullptr;
 			auto item = encMap.find(sockID);
 			if (item == encMap.end()) {
+				if (nonce == nullptr) {
+					return nullptr;
+				}
 				enc = new encryptor(info->DATA_KEY, nonce);
 				encMap[sockID] = enc;
 			} else {

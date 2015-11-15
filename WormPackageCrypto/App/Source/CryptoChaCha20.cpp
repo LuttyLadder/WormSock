@@ -86,6 +86,7 @@ bool CryptoChaCha20::initSetting(WormTool& tool) {
 bool CryptoChaCha20::traRecvDataPackage(int sockID, void* arg) {
 	//服务器接受客户端消息或者客户端接受客户消息
 	encryptor* enc = getEncryptor(sockID);
+	if (enc == nullptr) return false; //已被释放
 	receiverPackage *recvInfo = (receiverPackage *) arg;
 
 	switch (runMode) {
@@ -104,6 +105,7 @@ bool CryptoChaCha20::traRecvDataPackage(int sockID, void* arg) {
 bool CryptoChaCha20::traPackDataPackage(int sockID, void* arg) {
 	//客户端发送消息给服务器或者服务器发送消息给服务
 	encryptor* enc = getEncryptor(sockID);
+	if (enc == nullptr) return false; //已被释放
 	receiverPackage *recvInfo = (receiverPackage *) arg;
 
 	switch (runMode) {

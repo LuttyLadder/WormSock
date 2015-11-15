@@ -293,6 +293,16 @@ void Transmitter::process() {
 			}
 
 			if (event.haveEvents(SE::Disconnect)) {
+				receiverPackage *recvInfo = new receiverPackage(0, autobuf);
+
+				recvInfo->size = sock.recv(recvInfo->buf, 1500);
+				if (recvInfo->size > 0) {
+					wHook->pushAll("Transmitter Package Data Package", si.recSockID, recvInfo, true);
+					wHook->pushAll("Receiver Sending Package", si.recSockID, recvInfo, true);
+				} else {
+					delete recvInfo;
+				}
+
 				closeQueue.push(si.recSockID);
 				DEBUG("remote sock Disconnect");
 			}

@@ -8,6 +8,8 @@
 #include "../Header/Receiver.h"
 
 #include <arpa/inet.h>
+#include <linux/netfilter_ipv4.h>
+#include <cstdio>
 #include <cstring>
 #include <functional>
 #include <iostream>
@@ -15,13 +17,6 @@
 #include <thread>
 #include <tr1/unordered_set>
 #include <utility>
-
-#include <netinet/in.h>
-#include <linux/netfilter_ipv4.h>
-#include <unistd.h>
-#include <cstdint>
-#include <iostream>
-#include <string>
 
 #include "../../Framework/Header/Crypto/Dec.h"
 #include "../../Framework/Header/Debug/Debug.h"

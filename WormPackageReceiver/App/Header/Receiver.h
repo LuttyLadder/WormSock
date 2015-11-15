@@ -19,7 +19,7 @@
 #include "../../Framework/Header/Util/AutoBuffer.h"
 #include "WormPlugin.h"
 
-#define HOOK_ADDRESS
+//#define HOOK_ADDRESS
 
 class Receiver: public WormPluginInstance {
 	private:

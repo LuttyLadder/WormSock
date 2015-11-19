@@ -21,7 +21,7 @@
 #include "../Header/WormTool.h"
 
 CryptoChaCha20::CryptoChaCha20() {
-	
+
 }
 
 CryptoChaCha20::~CryptoChaCha20() {

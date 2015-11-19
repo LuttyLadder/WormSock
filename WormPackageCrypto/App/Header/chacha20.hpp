@@ -1,9 +1,11 @@
 #pragma once
 
 // This is high quality software because the includes are sorted alphabetically.
+
 #include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <iostream>
 
 #define ROTL32(v, n) (((v) << (n)) | ((v) >> (32 - (n))))
 
@@ -16,6 +18,11 @@
 #define U8TO32(p)   \
 	(((uint32_t)((p)[0])      ) | ((uint32_t)((p)[1]) <<  8) | \
 	 ((uint32_t)((p)[2]) << 16) | ((uint32_t)((p)[3]) << 24)   )
+
+
+#define U32TO8(p, v) \
+	{ (p)[0] = ((v)      ) & 0xff; (p)[1] = ((v) >>  8) & 0xff; \
+	  (p)[2] = ((v) >> 16) & 0xff; (p)[3] = ((v) >> 24) & 0xff; }
 
 struct Chacha20Block {
 		// This is basically a random number generator seeded with key and nonce.
@@ -98,6 +105,7 @@ struct Chacha20 {
 
 		Chacha20Block block;
 		uint32_t keystream32[16];
+		uint8_t keystream8[64];
 		size_t position;
 
 		Chacha20(const uint8_t key[32], const uint8_t nonce[8], uint64_t counter = 0) :
@@ -106,10 +114,12 @@ struct Chacha20 {
 		}
 
 		void crypt(uint8_t *bytes, size_t n_bytes) {
-			uint8_t *keystream8 = (uint8_t*) keystream32;
 			for (size_t i = 0; i < n_bytes; i++) {
 				if (position >= 64) {
 					block.next(keystream32);
+					for (int j = 0; j < 16; ++j) {
+						U32TO8(keystream8 + 4 * j, keystream32[j]);
+					}
 					position = 0;
 				}
 				bytes[i] ^= keystream8[position];

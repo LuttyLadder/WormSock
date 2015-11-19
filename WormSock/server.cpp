@@ -20,8 +20,13 @@
 #	define PLUGIN_PATH "/mnt/WormSock/Plugin"
 #	define CONFIG_PATH "/mnt/WormSock/Config"
 #else
-#	define PLUGIN_PATH "/home/lutty/workspace/Test/WormSocks/DebugPlugin"
-#	define CONFIG_PATH "/home/lutty/workspace/Test/WormSocks/Config"
+#	ifdef _X86_RELEASE
+#		define PLUGIN_PATH "/home/lutty/workspace/Test/WormSocks/ReleasePlugin"
+#		define CONFIG_PATH "/home/lutty/workspace/Test/WormSocks/Config"
+#	else
+#		define PLUGIN_PATH "/home/lutty/workspace/Test/WormSocks/DebugPlugin"
+#		define CONFIG_PATH "/home/lutty/workspace/Test/WormSocks/Config"
+#	endif
 #endif
 
 bool run = true;
